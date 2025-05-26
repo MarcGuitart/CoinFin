@@ -6,9 +6,13 @@ pluginManagement {
                 includeGroupByRegex("com\\.google.*")
                 includeGroupByRegex("androidx.*")
             }
+            google()
+            mavenCentral()
+            gradlePluginPortal()
         }
-        mavenCentral()
-        gradlePluginPortal()
+    }
+    plugins {
+        id("com.google.gms.google-services")
     }
 }
 dependencyResolutionManagement {

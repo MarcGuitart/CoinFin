@@ -1,5 +1,6 @@
-package com.example.coinfin.ui
+package com.example.coinfin
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,8 @@ import com.example.coinfin.ui.home.HomeFragment
 import com.example.coinfin.ui.analytics.AnalyticsFragment
 import com.example.coinfin.ui.profile.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 

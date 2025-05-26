@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "579128445645",
+    "project_id": "coinfin-6e899",
+    "storage_bucket": "coinfin-6e899.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579128445645:android:bc9c1651137b4c303a7784",
+        "android_client_info": {
+          "package_name": "com.example.coinfin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAG2CBwha5Di1xLFIsmEePD-HkRFWNPhEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

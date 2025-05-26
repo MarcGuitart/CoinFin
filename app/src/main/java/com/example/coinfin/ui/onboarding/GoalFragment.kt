@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.coinfin.R
-import com.example.coinfin.ui.MainActivity
+import com.example.coinfin.MainActivity
 
 class GoalFragment : Fragment() {
     override fun onCreateView(
