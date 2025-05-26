@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/usernameEdit"
+            android:hint="Email"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:id="@+id/passwordEdit"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Entrar"/>
+
+        <Button
+            android:id="@+id/toggleModeButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="No account? Sign up"/>
+
+        <Button
+            android:id="@+id/NoPasswordButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="No te acuerdas de la contraseña? Restabler contraseña"/>
+</LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

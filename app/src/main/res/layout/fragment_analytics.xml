@@ -64,6 +64,18 @@
                     android:textSize="18sp"
                     android:textColor="@color/primary_text"/>
 
+                <TextView
+                    android:id="@+id/expenseText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Expenses" />
+
+                <TextView
+                    android:id="@+id/savingText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Savings" />
+
 
                 <ImageView
                     android:layout_width="match_parent"

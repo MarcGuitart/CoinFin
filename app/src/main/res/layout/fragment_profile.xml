@@ -79,8 +79,6 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- Categorías a evitar -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -102,10 +100,29 @@
                     android:textSize="18sp"
                     android:textColor="@color/primary_text"
                     android:layout_marginBottom="8dp"/>
+                <TextView
+                    android:id="@+id/usernameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username" />
+
+                <TextView
+                    android:id="@+id/emailText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email" />
 
                 <CheckBox android:text="Cafés" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 <CheckBox android:text="Suscripciones" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 <CheckBox android:text="Comida a domicilio" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                <Button
+                    android:id="@+id/logoutButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cerrar sesión"
+                    android:layout_marginTop="24dp"/>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
