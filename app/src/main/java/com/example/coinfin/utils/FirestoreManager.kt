@@ -8,22 +8,17 @@ object FirestoreManager {
 
     // Función para guardar datos de usuario
     fun saveUserProfile(uid: String, email: String, username: String, callback: (Boolean) -> Unit) {
-        val userMap = hashMapOf(
+        val userMap = mapOf(
             "uid" to uid,
             "email" to email,
             "username" to username
         )
-
-        // Guardamos los datos del usuario en la colección "users"
-        db.collection("users").document(uid)
+        FirebaseFirestore.getInstance().collection("users").document(uid)
             .set(userMap)
-            .addOnSuccessListener {
-                callback(true)
-            }
-            .addOnFailureListener { exception ->
-                callback(false)
-            }
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
     }
+
 
     // Función para obtener datos de usuario
     fun getUserData(uid: String, callback: (Map<String, Any>?) -> Unit) {

@@ -16,15 +16,13 @@ object AuthManager {
     }
 
     fun signUp(email: String, password: String, callback: (Boolean, FirebaseUser?, String?) -> Unit) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    callback(true, auth.currentUser, null)
-                } else {
-                    callback(false, null, it.exception?.message)
-                }
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                val user = FirebaseAuth.getInstance().currentUser
+                callback(task.isSuccessful, user, task.exception?.message)
             }
     }
+
 
     fun getCurrentUser(): FirebaseUser? = auth.currentUser
     fun signOut() = auth.signOut()
