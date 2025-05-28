@@ -1,5 +1,6 @@
 package com.example.coinfin.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,47 +12,37 @@ import androidx.fragment.app.Fragment
 import com.example.coinfin.R
 import com.example.coinfin.data.repository.ProfileRepository
 import com.example.coinfin.data.repository.UserProfile
+import com.example.coinfin.databinding.FragmentProfileBinding
+import com.example.coinfin.ui.onboarding.InitialActivity
+import com.example.coinfin.utils.AuthManager
+import com.example.coinfin.utils.FirestoreManager
 
 class ProfileFragment : Fragment() {
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-        val savingsGoal = view.findViewById<EditText>(R.id.inputSavingsGoal)
-        val startDay = view.findViewById<EditText>(R.id.inputStartDay)
+    private lateinit var binding: FragmentProfileBinding
 
-        val prefs = requireContext().getSharedPreferences("userPrefs", AppCompatActivity.MODE_PRIVATE)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        val profile = UserProfile(
-            uid = "usuario123",
-            savingsGoal = 300,
-            resetDay = 18,
-            avoidCategories = listOf("Cafés", "Suscripciones")
-        )
-
-        ProfileRepository.saveUserProfile(profile) { success ->
-            if (success) {
-                Toast.makeText(context, "Perfil guardado", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Error al guardar", Toast.LENGTH_SHORT).show()
+        val user = AuthManager.getCurrentUser()
+        user?.let {
+            FirestoreManager.getUserData(it.uid) { data ->
+                data?.let {
+                    binding.usernameText.text = it["username"]?.toString() ?: "N/A"
+                    binding.emailText.text = it["email"]?.toString() ?: "N/A"
+                }
             }
         }
 
-        // Cargar datos guardados
-        savingsGoal.setText(prefs.getInt("goal", 0).toString())
-        startDay.setText(prefs.getInt("startDay", 1).toString())
+        binding.logoutButton.setOnClickListener {
+            AuthManager.signOut()
 
-        // Guardar cuando el usuario cambia
-        savingsGoal.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                prefs.edit().putInt("goal", savingsGoal.text.toString().toIntOrNull() ?: 0).apply()
-            }
+            val intent = Intent(requireContext(), InitialActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
-
-        startDay.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                prefs.edit().putInt("startDay", startDay.text.toString().toIntOrNull() ?: 1).apply()
-            }
-        }
+        return binding.root
     }
 }
-
