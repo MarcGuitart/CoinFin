@@ -8,6 +8,10 @@
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/Theme.CoinFin">
+
+        <activity android:name=".ui.onboarding.SignUpActivity" />
+        <activity android:name=".ui.onboarding.LoginActivity" />
+        <activity android:name=".ui.home.MainActivity" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.coinfin.R
-import com.example.coinfin.MainActivity
+//import com.example.coinfin.MainActivity
 
 class GoalFragment : Fragment() {
     override fun onCreateView(
@@ -19,8 +19,8 @@ class GoalFragment : Fragment() {
 
         val startButton: Button = view.findViewById(R.id.btnStart)
         startButton.setOnClickListener {
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            startActivity(intent)
+            //val intent = Intent(requireContext(), MainActivity::class.java)
+            //startActivity(intent)
             requireActivity().finish() // Cierra el onboarding
         }
 

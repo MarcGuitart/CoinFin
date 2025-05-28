@@ -4,53 +4,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:padding="32dp"
+        android:background="@color/background_onboarding">
 
         <ImageView
+            android:id="@+id/logoImage"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_marginBottom="24dp"
             android:src="@drawable/ic_logo" />
 
-        <EditText
-            android:id="@+id/emailEditText"
-            android:layout_width="match_parent"
+        <TextView
+            android:text="Bienvenido a CoinFin"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="48dp"
+            android:gravity="center"
             android:layout_height="wrap_content"
-            android:hint="Correo electrónico"
-            android:inputType="textEmailAddress" />
-
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Contraseña"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/usernameEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre de usuario" />
+            android:layout_width="wrap_content"/>
 
         <Button
             android:id="@+id/signUpButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Registrarse"
-            android:layout_marginTop="16dp"/>
+            android:text="Sign Up"
+            android:backgroundTint="@color/secundary"
+            android:layout_marginTop="16dp" />
 
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ya tengo cuenta / Iniciar sesión"
-            android:layout_marginTop="8dp"/>
-    </LinearLayout>
+            android:backgroundTint="@color/secundary"
+            android:text="Login"
+            android:layout_marginTop="8dp" />
 
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

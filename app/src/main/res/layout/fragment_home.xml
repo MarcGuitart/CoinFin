@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvSummaryTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:backgroundTint="@color/background_nav">
+        android:backgroundTint="@color/secundary">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:text="Ver detalles"
         android:textColor="@color/white"
-        android:backgroundTint="@color/nav_item_color"
+        android:backgroundTint="@color/secundary"
         android:layout_marginTop="8dp"
         app:cornerRadius="12dp"
         app:layout_constraintTop_toBottomOf="@id/cardStats"

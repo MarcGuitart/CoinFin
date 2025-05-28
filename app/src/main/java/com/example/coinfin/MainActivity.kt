@@ -1,4 +1,4 @@
-package com.example.coinfin
+package com.example.coinfin.ui.home
 
 import android.app.Application
 import android.os.Bundle

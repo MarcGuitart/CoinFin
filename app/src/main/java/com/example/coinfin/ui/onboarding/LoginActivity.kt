@@ -3,69 +3,53 @@ package com.example.coinfin.ui.onboarding
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.coinfin.utils.FirestoreManager
-import com.example.coinfin.databinding.ActivityLoginBinding
+import com.example.coinfin.R
+import com.example.coinfin.ui.home.MainActivity
 import com.example.coinfin.utils.AuthManager
-import com.google.android.ads.mediationtestsuite.activities.HomeActivity
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityLoginBinding
-    private var isLoginMode = true
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_login)
 
-        binding.toggleModeButton.setOnClickListener {
-            isLoginMode = !isLoginMode
-            updateUI()
-        }
+        val emailEditText: EditText = findViewById(R.id.emailEditText)
+        val passwordEditText: EditText = findViewById(R.id.passwordEditText)
+        val loginButton: Button = findViewById(R.id.loginButton)
+        val progressBar: ProgressBar = findViewById(R.id.progressBar)
+        loginButton.setOnClickListener {
+            val email = emailEditText.text.toString()
+            val password = passwordEditText.text.toString()
 
-        binding.submitButton.setOnClickListener {
-            val email = binding.usernameEdit.text.toString()
-            val password = binding.passwordEdit.text.toString()
-            val username = binding.usernameEdit.text.toString()
-
-            if (email.isBlank() || password.isBlank() || (!isLoginMode && username.isBlank())) {
-                Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
+            if (email.isBlank() || password.isBlank()) {
+                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (isLoginMode) {
-                AuthManager.signIn(email, password) { success, error ->
-                    if (success) startHome()
-                    else Toast.makeText(this, "Login failed: $error", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                AuthManager.signUp(email, password) { success, user, error ->
-                    if (success && user != null) {
-                        FirestoreManager.saveUserProfile(user.uid, email, username) { saved ->
-                            if (saved) startHome()
-                            else Toast.makeText(this, "Error saving user", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(this, "Signup failed: $error", Toast.LENGTH_SHORT).show()
-                    }
+            AuthManager.signIn(email, password) { success, error ->
+                progressBar.visibility = View.VISIBLE
+                if (success) {
+                    progressBar.visibility = View.GONE
+                    // Login exitoso, redirige a MainActivity
+                    startActivity(Intent(this, com.example.coinfin.ui.home.MainActivity::class.java))
+                    finish()
+                } else {
+                    Toast.makeText(this, "Error: $error", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+        val linkToRegister: TextView = findViewById(R.id.linkToRegister)
 
-        updateUI()
-    }
+        linkToRegister.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
+        }
 
-    private fun updateUI() {
-        binding.usernameEdit.visibility = if (isLoginMode) View.GONE else View.VISIBLE
-        binding.toggleModeButton.text = if (isLoginMode) "No account? Sign up" else "Have an account? Log in"
-        binding.submitButton.text = if (isLoginMode) "Login" else "Sign Up"
-    }
-
-    private fun startHome() {
-        startActivity(Intent(this, HomeActivity::class.java))
-        finish()
     }
 }
