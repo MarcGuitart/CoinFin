@@ -24,6 +24,11 @@ class SignUpActivity : AppCompatActivity() {
         val signUpButton: Button = findViewById(R.id.signUpButton)
         val linkToLogin: TextView = findViewById(R.id.linkToLogin)
 
+        fun isValidPassword(password: String): Boolean {
+            val passwordPattern = "^(?=.*[A-Z])(?=.*\\d).{8,}\$"
+            return password.matches(passwordPattern.toRegex())
+        }
+
         linkToLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
@@ -40,17 +45,20 @@ class SignUpActivity : AppCompatActivity() {
             }
 
             AuthManager.signUp(email, password) { success, user, error ->
-                if (success && user != null) {
+                if (success && user != null && isValidPassword(password)) {
                     FirestoreManager.saveUserProfile(user.uid, email, username) { saved ->
                         if (saved) {
                             Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show()
+                            supportActionBar?.setDisplayHomeAsUpEnabled(true)
                             startActivity(Intent(this, com.example.coinfin.ui.home.MainActivity::class.java))
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                             finish()
                         } else {
                             Toast.makeText(this, "Error al guardar datos", Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {
+                    if (!isValidPassword(password)) Toast.makeText(this, "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.", Toast.LENGTH_SHORT).show()
                     Toast.makeText(this, "Error: $error", Toast.LENGTH_SHORT).show()
                 }
             }

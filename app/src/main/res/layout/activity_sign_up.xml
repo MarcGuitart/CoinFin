@@ -5,6 +5,13 @@
     android:gravity="center"
     android:padding="24dp">
 
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="backButtonClick"
+        android:src="@drawable/ic_back"/>
+
     <TextView
         android:text="Regístrate"
         android:textSize="24sp"

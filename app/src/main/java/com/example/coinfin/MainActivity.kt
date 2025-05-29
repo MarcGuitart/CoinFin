@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
-
+        bottomNavigationView.selectedItemId = R.id.nav_home
         loadFragment(HomeFragment())
 
         bottomNavigationView.setOnItemSelectedListener {
