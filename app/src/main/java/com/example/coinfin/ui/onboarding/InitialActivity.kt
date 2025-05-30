@@ -2,6 +2,7 @@ package com.example.coinfin.ui.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.coinfin.R
@@ -11,6 +12,7 @@ import com.example.coinfin.ui.onboarding.LoginActivity
 
 class InitialActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        android.util.Log.d("CoinFin", "InitialActivity started correctamente")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_initial)
 
