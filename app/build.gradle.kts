@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.mediation.test.suite)
     implementation(libs.androidx.material3.android)
+    implementation(libs.androidx.media3.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

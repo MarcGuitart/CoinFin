@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.coinfin.R
-import com.example.coinfin.ui.home.MainActivity
 import com.example.coinfin.utils.AuthManager
 
 class LoginActivity : AppCompatActivity() {
@@ -26,9 +25,8 @@ class LoginActivity : AppCompatActivity() {
         val progressBar: ProgressBar = findViewById(R.id.progressBar)
         val backButton: ImageButton = findViewById(R.id.backButton)
         backButton.setOnClickListener {
-            finish()
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-
+            onBackPressedDispatcher.onBackPressed()
+            overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left)
         }
 
         loginButton.setOnClickListener {
