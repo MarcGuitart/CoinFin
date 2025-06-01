@@ -12,5 +12,6 @@
     <color name="item_unselected">#A0A0A0</color>
     <color name="item_selected">#3A6351</color>
     <color name="colorPrimary">#F9FAFB</color>
+    <color name="british_green">#354A21</color>
 
 </resources>
