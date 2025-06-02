@@ -13,5 +13,6 @@
     <color name="item_selected">#3A6351</color>
     <color name="colorPrimary">#F9FAFB</color>
     <color name="british_green">#354A21</color>
+    <color name="background_panels">#4CAF50</color>
 
 </resources>
