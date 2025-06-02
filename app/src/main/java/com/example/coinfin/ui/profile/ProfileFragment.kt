@@ -42,11 +42,6 @@ class ProfileFragment : Fragment() {
 
         // Cambios en el NumberPicker
         binding.numberPicker.setOnValueChangedListener { _, _, newVal ->
-            Toast.makeText(
-                requireContext(),
-                "Nuevo día seleccionado: $newVal",
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         // Listener de Chips (reglas)
