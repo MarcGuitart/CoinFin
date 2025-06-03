@@ -62,5 +62,8 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.fragment:fragment-ktx:1.7.0")
 
 }
