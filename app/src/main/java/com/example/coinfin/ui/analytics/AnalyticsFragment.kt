@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AnalyticsFragment : Fragment() {
 
@@ -35,14 +36,21 @@ class AnalyticsFragment : Fragment() {
 
         val user = AuthManager.getCurrentUser()
         user?.let {
-            FirestoreManager.getUserData(it.uid) { data ->
-                data?.let {
-                    val gastos = it["monthly_expense"] ?: 0
-                    val ahorro = it["monthly_saving"] ?: 0
-                    binding.expenseText.text = "Expenses: €$gastos"
-                    binding.savingText.text = "Savings: €$ahorro"
+            val uid = AuthManager.getCurrentUser()?.uid ?: return@let
+
+            val userDoc = FirebaseFirestore.getInstance().collection("users").document(uid)
+            userDoc.collection("objetivos").document("mensual").get().addOnSuccessListener { objSnap ->
+                val ahorro = objSnap.getDouble("monto") ?: 0.0
+                binding.savingText.text = "Objetivo ahorro: €${ahorro.toInt()}"
+
+                userDoc.collection("gastos").get().addOnSuccessListener { gastosSnap ->
+                    val gastosTotales = gastosSnap.documents.sumOf {
+                        it.getDouble("cantidad") ?: 0.0
+                    }
+                    binding.expenseText.text = "Gasto total: €${gastosTotales.toInt()}"
                 }
             }
+
         }
 
         return binding.root

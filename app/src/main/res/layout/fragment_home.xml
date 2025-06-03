@@ -58,5 +58,17 @@
             android:text="Configurar objetivo"
             android:backgroundTint="@color/background_panels"
             android:textColor="@android:color/white" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progresoMensual"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:progress="60"
+            android:progressTint="@color/background_panels"
+            android:trackTint="@color/secundary"
+            style="@style/Widget.Material3.LinearProgressIndicator"
+            android:layout_marginTop="8dp"/>
+
+
     </LinearLayout>
 </ScrollView>

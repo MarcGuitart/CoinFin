@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.example.coinfin.databinding.FragmentProfileBinding
+import com.example.coinfin.utils.AuthManager
+import com.example.coinfin.utils.FirestoreManager
 
 class ProfileFragment : Fragment() {
 
@@ -34,27 +36,31 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // EditText de objetivo de ahorro
+        val user = AuthManager.getCurrentUser()
+        var diaSeleccionado = 1
+
         binding.metaEditText.addTextChangedListener { editable ->
             ahorroObjetivo = editable.toString().toIntOrNull() ?: 0
             updateImpactPreview()
+
+            user?.let {
+                FirestoreManager.guardarObjetivoMensual(it.uid, ahorroObjetivo, diaSeleccionado) { exito ->
+                    if (!exito) Toast.makeText(requireContext(), "Error guardando objetivo", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
-        // Cambios en el NumberPicker
         binding.numberPicker.setOnValueChangedListener { _, _, newVal ->
-        }
+            diaSeleccionado = newVal
 
-        // Listener de Chips (reglas)
-        binding.rulesChipGroup.setOnCheckedStateChangeListener { _, _ ->
-            updateImpactPreview()
-        }
-
-        // Switch de notificaciones
-        binding.notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
-            val mensaje = if (isChecked) "Notificaciones activadas" else "Notificaciones desactivadas"
-            Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+            user?.let {
+                FirestoreManager.guardarObjetivoMensual(it.uid, ahorroObjetivo, diaSeleccionado) { exito ->
+                    if (!exito) Toast.makeText(requireContext(), "Error guardando día", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
+
 
     private fun updateImpactPreview() {
         val impacto = ahorroObjetivo + 45

@@ -26,11 +26,15 @@ class GastoAdapter(private val lista: List<Gasto>) : RecyclerView.Adapter<GastoA
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val gasto = lista[position]
         holder.categoria.text = gasto.categoria
-        holder.monto.text = gasto.monto
-        holder.fecha.text = gasto.fecha
-        holder.alerta.visibility = if (gasto.alerta)
-            View.VISIBLE else View.GONE
+        holder.monto.text = "€${gasto.cantidad}"
+
+        val formatter = java.text.SimpleDateFormat("dd MMM yyyy", java.util.Locale.getDefault())
+        val fechaFormateada = gasto.fecha?.toDate()?.let { formatter.format(it) } ?: "Sin fecha"
+        holder.fecha.text = fechaFormateada
+
+        holder.alerta.visibility = if (gasto.alerta) View.VISIBLE else View.GONE
     }
+
 
     override fun getItemCount(): Int = lista.size
 }
