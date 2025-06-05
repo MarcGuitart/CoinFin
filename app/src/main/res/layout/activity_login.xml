@@ -8,6 +8,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
+        android:background="@color/background_onboarding"
         android:padding="24dp">
 
         <ImageButton

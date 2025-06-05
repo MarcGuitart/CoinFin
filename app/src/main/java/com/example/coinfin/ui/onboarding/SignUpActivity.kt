@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,11 @@ class SignUpActivity : AppCompatActivity() {
         val usernameEditText: EditText = findViewById(R.id.usernameEditText)
         val signUpButton: Button = findViewById(R.id.signUpButton)
         val linkToLogin: TextView = findViewById(R.id.linkToLogin)
-
+        val backButton: ImageButton = findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+            overridePendingTransition(R.animator.slide_in_right, R.animator.slide_out_left)
+        }
         fun isValidPassword(password: String): Boolean {
             val passwordPattern = "^(?=.*[A-Z])(?=.*\\d).{8,}\$"
             return password.matches(passwordPattern.toRegex())
