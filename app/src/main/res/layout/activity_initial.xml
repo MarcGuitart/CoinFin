@@ -15,20 +15,10 @@
 
         <ImageView
             android:id="@+id/logoImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="360dp"
+            android:layout_height="360dp"
             android:layout_marginBottom="24dp"
             android:src="@drawable/ic_logo" />
-
-        <TextView
-            android:text="Bienvenido a CoinFin"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="48dp"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
 
         <Button
             android:id="@+id/signUpButton"

@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background_onboarding">#F9FAFB</color>
+    <color name="background_onboarding_2">#F9FAFB</color>
     <color name="primary_text">#1F2937</color>
     <color name="secondary_text">#4B5563</color>
     <color name="secundary">#3A6351</color>
@@ -14,5 +14,9 @@
     <color name="colorPrimary">#F9FAFB</color>
     <color name="british_green">#354A21</color>
     <color name="background_panels">#4CAF50</color>
+    <color name="background_onboarding">#fff8e9</color>
+    <color name="cerrar_sesion">#8B0000</color>
+
+
 
 </resources>

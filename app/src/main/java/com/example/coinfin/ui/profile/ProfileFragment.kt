@@ -1,5 +1,6 @@
 package com.example.coinfin.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.example.coinfin.databinding.FragmentProfileBinding
+import com.example.coinfin.ui.onboarding.InitialActivity
 import com.example.coinfin.utils.AuthManager
 import com.example.coinfin.utils.FirestoreManager
 
@@ -33,6 +35,12 @@ class ProfileFragment : Fragment() {
         // Configurar NumberPicker
         binding.numberPicker.minValue = 1
         binding.numberPicker.maxValue = 31
+        binding.CerrarSesionButton.setOnClickListener {
+            AuthManager.signOut() // Cierra sesión (debes tener este método en tu AuthManager)
+            val intent = Intent(requireContext(), InitialActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
     }
 
     private fun setupListeners() {

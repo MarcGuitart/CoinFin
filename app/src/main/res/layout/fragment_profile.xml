@@ -97,6 +97,15 @@
             android:max="100"
             android:layout_marginBottom="8dp"/>
 
+
+        <Button
+            android:id="@+id/CerrarSesionButton"
+            android:layout_width="370dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/cerrar_sesion"
+            android:text="Close Sesion" />
+
         <!-- Sistema de medallas por achievements
         <ImageView
             android:id="@+id/medalla"
