@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/homeScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,6 +23,16 @@
             android:textColor="@android:color/black"
             android:layout_gravity="center_horizontal"
             android:paddingBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/labelUltimosMovimientos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tus últimos 3 movimientos:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp"/>
 
         <!-- Lista de gastos -->
         <androidx.recyclerview.widget.RecyclerView
@@ -62,10 +73,10 @@
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progresoMensual"
             android:layout_width="match_parent"
-            android:layout_height="16dp"
+            android:layout_height="wrap_content"
             android:progress="60"
-            android:progressTint="@color/background_panels"
-            android:trackTint="@color/secundary"
+            app:indicatorColor="@color/background_panels"
+            app:trackColor="@color/secundary"
             style="@style/Widget.Material3.LinearProgressIndicator"
             android:layout_marginTop="8dp"/>
 

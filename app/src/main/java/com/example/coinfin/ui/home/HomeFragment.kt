@@ -9,9 +9,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.coinfin.R
 import com.example.coinfin.adapter.GastoAdapter
 import com.example.coinfin.data.models.Gasto
 import com.example.coinfin.databinding.FragmentHomeBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 
@@ -75,7 +77,9 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.progresoMensual.observe(viewLifecycleOwner) { progreso ->
+            binding.progresoMensual.isIndeterminate = false
             val diferencia = 100 - progreso
+            binding.progresoMensual.setProgressCompat(progreso, true)
             val texto = if (diferencia > 0) {
                 binding.diferenciaText.setTextColor(Color.parseColor("#4CAF50"))
                 "Estás a ${diferencia}% de tu objetivo mensual"
@@ -95,8 +99,7 @@ class HomeFragment : Fragment() {
 
     private fun setupListeners() {
         binding.configurarObjetivoBtn.setOnClickListener {
-            Toast.makeText(requireContext(), "Abrir configuración de objetivos", Toast.LENGTH_SHORT).show()
-            // Navegar a otra pantalla futura
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottomNavigationView).selectedItemId = R.id.nav_profile
         }
     }
 

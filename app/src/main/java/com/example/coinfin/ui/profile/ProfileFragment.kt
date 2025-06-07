@@ -12,6 +12,8 @@ import com.example.coinfin.databinding.FragmentProfileBinding
 import com.example.coinfin.ui.onboarding.InitialActivity
 import com.example.coinfin.utils.AuthManager
 import com.example.coinfin.utils.FirestoreManager
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class ProfileFragment : Fragment() {
 
@@ -26,6 +28,14 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         setupInputs()
+        val uid = AuthManager.getCurrentUser()?.uid ?: return binding.root
+
+        FirestoreManager.obtenerConfiguracionUsuario(uid) { config ->
+            config?.let {
+                binding.notificationSwitch.isChecked = it.notificaciones
+                binding.chipRule1.isChecked = it.reglasAhorro
+            }
+        }
         setupListeners()
 
         return binding.root
@@ -52,8 +62,13 @@ class ProfileFragment : Fragment() {
             updateImpactPreview()
 
             user?.let {
-                FirestoreManager.guardarObjetivoMensual(it.uid, ahorroObjetivo, diaSeleccionado) { exito ->
-                    if (!exito) Toast.makeText(requireContext(), "Error guardando objetivo", Toast.LENGTH_SHORT).show()
+                FirestoreManager.guardarConfiguracionUsuario(
+                    uid = user.uid,
+                    ahorroMensual = ahorroObjetivo,
+                    diaInicioMes = diaSeleccionado,
+                    notificaciones = true
+                ) { exito ->
+                    if (!exito) Toast.makeText(requireContext(), "Error guardando configuración", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -62,10 +77,32 @@ class ProfileFragment : Fragment() {
             diaSeleccionado = newVal
 
             user?.let {
-                FirestoreManager.guardarObjetivoMensual(it.uid, ahorroObjetivo, diaSeleccionado) { exito ->
-                    if (!exito) Toast.makeText(requireContext(), "Error guardando día", Toast.LENGTH_SHORT).show()
+                FirestoreManager.guardarRegla(user.uid, diaSeleccionado) { exito ->
+                    if (!exito) Toast.makeText(requireContext(), "Error guardando regla", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        binding.notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val uid = AuthManager.getCurrentUser()?.uid ?: return@setOnCheckedChangeListener
+            val data = mapOf("notificaciones" to isChecked)
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(uid)
+                .collection("reglas")
+                .document("config")
+                .set(data, SetOptions.merge())
+        }
+
+        binding.chipRule1.setOnCheckedChangeListener { _, isChecked ->
+            val uid = AuthManager.getCurrentUser()?.uid ?: return@setOnCheckedChangeListener
+            val data = mapOf("reglas_ahorro" to isChecked)
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(uid)
+                .collection("reglas")
+                .document("config")
+                .set(data, SetOptions.merge())
         }
     }
 
