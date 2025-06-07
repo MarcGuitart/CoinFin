@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background_onboarding_2">#F9FAFB</color>
     <color name="primary_text">#1F2937</color>
+    <color name="navbar_background">#FFF8E9</color>
     <color name="secondary_text">#4B5563</color>
     <color name="secundary">#3A6351</color>
     <color name="dimgrey">#9B9B9B</color>
