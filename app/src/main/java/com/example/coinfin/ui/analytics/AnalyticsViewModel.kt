@@ -1,4 +1,3 @@
-// AnalyticsViewModel.kt
 package com.example.coinfin.ui.analytics
 
 import androidx.lifecycle.LiveData
@@ -20,7 +19,6 @@ class AnalyticsViewModel(private val uid: String) : ViewModel() {
     private val _gastos = MutableLiveData<List<Gasto>>()
     val gastos: LiveData<List<Gasto>> get() = _gastos
 
-
     init {
         cargarReglasYDatos()
     }
@@ -41,7 +39,6 @@ class AnalyticsViewModel(private val uid: String) : ViewModel() {
     }
 
     private fun cargarGastos(diaInicio: Int) {
-
         FirestoreManager.obtenerCategoriasEvitables(uid) { categoriasEvitables ->
             db.collection("users").document(uid)
                 .collection("gastos")
@@ -51,37 +48,23 @@ class AnalyticsViewModel(private val uid: String) : ViewModel() {
                     val lista = snap.mapNotNull { doc ->
                         val categoria = doc.getString("categoria")?.lowercase() ?: ""
                         val evitable = categoria in categoriasEvitables
-                        Gasto(
-                            categoria = categoria,
-                            cantidad = doc.getDouble("cantidad") ?: 0.0,
-                            fecha = doc.getTimestamp("fecha") ?: Timestamp.now(),
-                            alerta = doc.getBoolean("alerta") ?: false,
-                            evitable = evitable
-                        )
+                        try {
+                            Gasto(
+                                categoria = categoria,
+                                cantidad = doc.getDouble("cantidad") ?: 0.0,
+                                fecha = doc.getTimestamp("fecha") ?: Timestamp.now(),
+                                alerta = doc.getBoolean("alerta") ?: false,
+                                evitable = evitable
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
                     }
-                    _gastos.value = snap.mapNotNull { it.toObject(Gasto::class.java) }
+                    _gastos.value = lista
                 }
         }
-
-        db.collection("users").document(uid).collection("gastos")
-            .whereGreaterThanOrEqualTo("fecha", primerTimestampDelMes(diaInicio))
-            .get()
-            .addOnSuccessListener { snap ->
-                val lista = snap.mapNotNull { doc ->
-                    try {
-                        Gasto(
-                            categoria = doc.getString("categoria") ?: "",
-                            cantidad = doc.getDouble("cantidad") ?: 0.0,
-                            fecha = doc.getTimestamp("fecha") ?: Timestamp.now(),
-                            alerta = doc.getBoolean("alerta") ?: false
-                        )
-                    } catch (e: Exception) {
-                        null
-                    }
-                }
-                _gastos.value = lista
-            }
     }
+
 
     private fun primerTimestampDelMes(dia: Int): Timestamp {
         val cal = Calendar.getInstance().apply {

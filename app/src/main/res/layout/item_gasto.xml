@@ -5,10 +5,11 @@
     android:orientation="horizontal"
     android:paddingVertical="8dp"
     android:paddingHorizontal="12dp"
-    android:background="@android:color/white">
+    android:background="@color/background_onboarding">
 
     <ImageView
         android:id="@+id/ivAlerta"
+        android:background="@color/background_onboarding"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@android:drawable/ic_dialog_alert"
@@ -20,7 +21,8 @@
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@color/background_onboarding">
 
         <TextView
             android:id="@+id/tvCategoria"

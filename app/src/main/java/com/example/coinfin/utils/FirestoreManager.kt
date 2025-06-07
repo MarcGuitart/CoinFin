@@ -104,21 +104,24 @@ object FirestoreManager {
         val ahorroMensual: Int = 0,
         val diaInicioMes: Int = 1,
         val notificaciones: Boolean = true,
-        val reglasAhorro: Boolean = true
+        val reglasAhorro: Boolean = true,
+        val ingresosMensuales: Int = 0
     )
 
     fun obtenerCategoriasEvitables(uid: String, callback: (List<String>) -> Unit) {
-        FirebaseFirestore.getInstance()
-            .collection("users")
-            .document(uid)
-            .collection("reglas")
-            .document("config")
-            .get()
-            .addOnSuccessListener { doc ->
-                val lista = doc.get("categorias_evitables") as? List<String> ?: emptyList()
-                callback(lista.map { it.lowercase() })
-            }
+        val docRef = FirebaseFirestore.getInstance()
+            .collection("users").document(uid)
+            .collection("reglas").document("config")
+
+        docRef.get().addOnSuccessListener { doc ->
+            val lista = doc.get("categorias_evitables") as? List<String> ?: emptyList()
+            callback(lista.map { it.lowercase() })
+        }.addOnFailureListener {
+            callback(emptyList())
+        }
     }
+
+
 
     fun obtenerConfiguracionUsuario(uid: String, callback: (ConfigReglas?) -> Unit) {
         FirebaseFirestore.getInstance()
@@ -132,7 +135,8 @@ object FirestoreManager {
                     ahorroMensual = doc.getLong("ahorro_mensual")?.toInt() ?: 0,
                     diaInicioMes = doc.getLong("dia_inicio_mes")?.toInt() ?: 1,
                     notificaciones = doc.getBoolean("notificaciones") ?: true,
-                    reglasAhorro = doc.getBoolean("reglas_ahorro") ?: true
+                    reglasAhorro = doc.getBoolean("reglas_ahorro") ?: true,
+                    ingresosMensuales = doc.getLong("ingresos_mensuales")?.toInt() ?: 0
                 )
                 callback(config)
             }

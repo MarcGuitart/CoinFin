@@ -1,5 +1,7 @@
 package com.example.coinfin.ui.analytics
 
+import android.graphics.Color
+import android.graphics.Color.GREEN
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,22 +46,58 @@ class AnalyticsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.gastos.observe(viewLifecycleOwner) { lista ->
+
             val evitable = lista.filter { it.evitable }.sumOf { it.cantidad }
             val necesario = lista.filter { !it.evitable }.sumOf { it.cantidad }
 
-            setupPieChart(binding.pieChart, necesario, evitable)
+            // PIE CHART (Evitable vs Necesario)
+            val entries = listOf(
+                PieEntry(evitable.toFloat(), "Evitable"),
+                PieEntry(necesario.toFloat(), "Necesario")
+            )
+
+            val pieDataSet = PieDataSet(entries, "Tipo de Gasto")
+            pieDataSet.setColors(Color.RED, Color.GRAY)
+            pieDataSet.valueTextColor = Color.WHITE
+            pieDataSet.valueTextSize = 14f
+
+            val pieData = PieData(pieDataSet)
+            binding.pieChart.data = pieData
+            binding.pieChart.invalidate()
+
 
             val reglas = viewModel.reglas.value ?: return@observe
             val diaHoy = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-            val gastadoHoy = lista.sumOf { it.cantidad }
             val diasPasados = diaHoy - reglas.diaInicioMes + 1
             val diasTotales = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)
-            val promedioDiario = gastadoHoy / diasPasados
-            val proyeccionTotal = promedioDiario * diasTotales
-            val ahorroEst = reglas.ahorroMensual - proyeccionTotal
+            val promedioDiario = lista.sumOf { it.cantidad } / diasPasados
+            val proyeccion = promedioDiario * diasTotales
+            val ahorroEstimado = reglas.ingresosMensuales - proyeccion
+            binding.estimacionText.text = if (ahorroEstimado >= 0) {
+                Color.parseColor("#4CAF50")
+                "Si sigues con este ritmo, ahorrarás aproximadamente %.2f€ este mes.".format(ahorroEstimado)
+            } else {
+                Color.parseColor("#F44336")
+                "Con tu ritmo actual, este mes tendrás un gasto de aproximadamente %.2f€ este mes.".format(-ahorroEstimado)
+            }
+            // LINE CHART (Proyección de ahorro mensual)
+            val entriesLine = listOf(
+                Entry(0f, 0f),
+                Entry(diasTotales.toFloat(), ahorroEstimado.toFloat())
+            )
 
-            setupLineChart(binding.lineChart, promedioDiario, ahorroEst, diasTotales)
+            val lineDataSet = LineDataSet(entriesLine, "Proyección ahorro")
+            lineDataSet.color = Color.BLUE
+            lineDataSet.lineWidth = 2f
+            lineDataSet.setDrawValues(false)
+            lineDataSet.setDrawCircles(false)
+
+            val lineData = LineData(lineDataSet)
+            binding.lineChart.data = lineData
+            binding.lineChart.invalidate()
+
         }
+
     }
 
     private fun setupPieChart(chart: PieChart, necesario: Double, evitable: Double) {
