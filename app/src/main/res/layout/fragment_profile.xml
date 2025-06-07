@@ -81,21 +81,23 @@
             android:text="Avisarme si rompo una regla"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Gamificación -->
         <TextView
-            android:id="@+id/impactPreview"
+            android:id="@+id/tipTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Progreso de ahorro" android:textStyle="bold"/>
+            android:text="Consejo del día"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:visibility="gone" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
+
+        <EditText
+            android:id="@+id/categoriasNecesariasEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progressTint="#FFD700"
-            android:progress="60"
-            android:max="100"
-            android:layout_marginBottom="8dp"/>
+            android:hint="Categorías necesarias (separadas por coma)"
+            android:inputType="text"
+            android:layout_marginTop="16dp"
+            />
 
 
         <Button

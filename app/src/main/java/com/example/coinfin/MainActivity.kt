@@ -25,9 +25,25 @@ class MainActivity : AppCompatActivity() {
 
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_home -> loadFragment(HomeFragment())
-                R.id.nav_profile -> loadFragment(ProfileFragment())
-                R.id.nav_analytics -> loadFragment(AnalyticsFragment())
+                R.id.nav_home -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, HomeFragment())
+                        .commit()
+                    true
+                }
+                R.id.nav_analytics -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, AnalyticsFragment())
+                        .commit()
+                    true
+                }
+                R.id.nav_profile -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, ProfileFragment())
+                        .commit()
+                    true
+                }
+                else -> false
             }
             true
         }

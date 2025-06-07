@@ -107,6 +107,19 @@ object FirestoreManager {
         val reglasAhorro: Boolean = true
     )
 
+    fun obtenerCategoriasEvitables(uid: String, callback: (List<String>) -> Unit) {
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(uid)
+            .collection("reglas")
+            .document("config")
+            .get()
+            .addOnSuccessListener { doc ->
+                val lista = doc.get("categorias_evitables") as? List<String> ?: emptyList()
+                callback(lista.map { it.lowercase() })
+            }
+    }
+
     fun obtenerConfiguracionUsuario(uid: String, callback: (ConfigReglas?) -> Unit) {
         FirebaseFirestore.getInstance()
             .collection("users")

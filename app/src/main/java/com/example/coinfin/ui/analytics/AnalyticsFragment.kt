@@ -4,92 +4,95 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.coinfin.R
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.coinfin.databinding.FragmentAnalyticsBinding
-import com.example.coinfin.utils.AuthManager
-import com.example.coinfin.utils.FirestoreManager
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.coinfin.utils.*
+import java.util.*
+
+class AnalyticsViewModelFactory(private val uid: String) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return AnalyticsViewModel(uid) as T
+    }
+}
 
 class AnalyticsFragment : Fragment() {
 
     private var _binding: FragmentAnalyticsBinding? = null
     private val binding get() = _binding!!
+    val viewModel: AnalyticsViewModel by viewModels {
+        val uid = AuthManager.getCurrentUser()?.uid ?: ""
+        AnalyticsViewModelFactory(uid)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAnalyticsBinding.inflate(inflater, container, false)
-
-        setupCharts()
-        setupInsights()
-
-        val user = AuthManager.getCurrentUser()
-        user?.let {
-            val uid = AuthManager.getCurrentUser()?.uid ?: return@let
-
-            val userDoc = FirebaseFirestore.getInstance().collection("users").document(uid)
-            userDoc.collection("objetivos").document("mensual").get().addOnSuccessListener { objSnap ->
-                val ahorro = objSnap.getDouble("monto") ?: 0.0
-                binding.savingText.text = "Objetivo ahorro: €${ahorro.toInt()}"
-
-                userDoc.collection("gastos").get().addOnSuccessListener { gastosSnap ->
-                    val gastosTotales = gastosSnap.documents.sumOf {
-                        it.getDouble("cantidad") ?: 0.0
-                    }
-                    binding.expenseText.text = "Gasto total: €${gastosTotales.toInt()}"
-                }
-            }
-
-        }
-
         return binding.root
     }
 
-    private fun setupCharts() {
-        val lineEntries = listOf(
-            Entry(1f, 30f),
-            Entry(2f, 50f),
-            Entry(3f, 70f),
-            Entry(4f, 100f),
-            Entry(5f, 112f)
-        )
-        val lineDataSet = LineDataSet(lineEntries, "Ahorro estimado")
-        lineDataSet.color = resources.getColor(R.color.british_green, null)
-        val lineData = LineData(lineDataSet)
-        binding.lineChart.data = lineData
-        binding.lineChart.invalidate()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // Pastel: Gastos por categoría
-        val pieEntries = listOf(
-            PieEntry(40f, "Alimentación"),
-            PieEntry(25f, "Ocio"),
-            PieEntry(20f, "Transporte"),
-            PieEntry(15f, "Otros")
-        )
-        val pieDataSet = PieDataSet(pieEntries, "")
-        pieDataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
-        val pieData = PieData(pieDataSet)
-        binding.pieChart.data = pieData
-        binding.pieChart.invalidate()
+        viewModel.gastos.observe(viewLifecycleOwner) { lista ->
+            val evitable = lista.filter { it.evitable }.sumOf { it.cantidad }
+            val necesario = lista.filter { !it.evitable }.sumOf { it.cantidad }
+
+            setupPieChart(binding.pieChart, necesario, evitable)
+
+            val reglas = viewModel.reglas.value ?: return@observe
+            val diaHoy = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            val gastadoHoy = lista.sumOf { it.cantidad }
+            val diasPasados = diaHoy - reglas.diaInicioMes + 1
+            val diasTotales = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH)
+            val promedioDiario = gastadoHoy / diasPasados
+            val proyeccionTotal = promedioDiario * diasTotales
+            val ahorroEst = reglas.ahorroMensual - proyeccionTotal
+
+            setupLineChart(binding.lineChart, promedioDiario, ahorroEst, diasTotales)
+        }
     }
 
-    private fun setupInsights() {
-        val insights = listOf(
-            "Has reducido un 12% tu gasto en comidas fuera",
-            "Gastaste 5 veces en Cafeterías"
+    private fun setupPieChart(chart: PieChart, necesario: Double, evitable: Double) {
+        val entries = listOf(
+            PieEntry(necesario.toFloat(), "Necesario"),
+            PieEntry(evitable.toFloat(), "Evitable")
         )
-        binding.insightsText.text = insights.joinToString("\n• ", prefix = "• ")
+        val dataSet = PieDataSet(entries, "Gastos").apply {
+            colors = ColorTemplate.MATERIAL_COLORS.toList()
+            valueTextSize = 14f
+        }
+        chart.data = PieData(dataSet)
+        chart.description = Description().apply { text = "Distribución de gastos" }
+        chart.animateY(1000)
+        chart.invalidate()
+    }
+
+    private fun setupLineChart(chart: LineChart, diario: Double, ahorroEst: Double, dias: Int) {
+        val entries = mutableListOf<Entry>()
+        for (i in 1..dias) {
+            val estimado = i * diario
+            val ahorro = viewModel.reglas.value?.ahorroMensual ?: 0
+            val progreso = ahorro - estimado
+            entries.add(Entry(i.toFloat(), progreso.toFloat()))
+        }
+        val dataSet = LineDataSet(entries, "Ahorro estimado").apply {
+            color = ColorTemplate.getHoloBlue()
+            valueTextSize = 12f
+        }
+        chart.data = LineData(dataSet)
+        chart.description = Description().apply { text = "Proyección mensual" }
+        chart.animateX(1000)
+        chart.invalidate()
     }
 
     override fun onDestroyView() {

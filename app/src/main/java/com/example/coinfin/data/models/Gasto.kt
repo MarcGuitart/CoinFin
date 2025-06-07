@@ -6,5 +6,6 @@ data class Gasto(
     val categoria: String = "",
     val cantidad: Double = 0.0,
     val fecha: Timestamp? = null,
-    val alerta: Boolean = false
+    val alerta: Boolean = false,
+    val evitable: Boolean = false
 )

@@ -8,61 +8,57 @@ import com.example.coinfin.data.models.CategoriaGasto
 import com.example.coinfin.data.models.Gasto
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
 class HomeViewModel(private val uid: String) : ViewModel() {
 
     private val db = FirebaseFirestore.getInstance()
 
     private val _gastos = MutableLiveData<List<Gasto>>()
-    val gastos: LiveData<List<Gasto>> get() = _gastos
+    val gastos: LiveData<List<Gasto>> = _gastos
 
-    private val _categorias = MutableLiveData<List<CategoriaGasto>>()
-    val categorias: LiveData<List<CategoriaGasto>> get() = _categorias
+    private val _objetivo = MutableLiveData<Double>()
+    val objetivo: LiveData<Double> = _objetivo
 
     private val _progresoMensual = MutableLiveData<Int>()
-    val progresoMensual: LiveData<Int> get() = _progresoMensual
-
-    private var objetivoMensual = 200.0
+    val progresoMensual: LiveData<Int> = _progresoMensual
 
     init {
-        cargarDatosDesdeFirebase()
+        cargarConfiguracion()
     }
 
-    private fun cargarDatosDesdeFirebase() {
-        db.collection("users")
-            .document(uid)
-            .collection("gastos")
+    private fun cargarConfiguracion() {
+        // 1) Primero leo la configuración (objetivo)
+        db.collection("users").document(uid)
+            .collection("reglas").document("config")
             .get()
-            .addOnSuccessListener { result ->
-                val listaGastos = result.mapNotNull { doc ->
-                    try {
-                        Gasto(
-                            categoria = doc.getString("categoria") ?: "",
-                            cantidad = doc.getDouble("cantidad") ?: 0.0,
-                            fecha = doc.getTimestamp("fecha") ?: Timestamp.now(),
-                            alerta = doc.getBoolean("alerta") ?: false
-                        )
-                    } catch (e: Exception) {
-                        Log.e("HomeViewModel", "Error parsing gasto: ${e.message}")
-                        null
-                    }
-                }.sortedByDescending { it.fecha }
-
-                _gastos.value = listaGastos.take(3)
-
-                _categorias.value = listaGastos.groupBy { it.categoria }.map {
-                    CategoriaGasto(it.key, it.value.sumOf { g -> g.cantidad })
-                }
-
-                val total = listaGastos.sumOf { it.cantidad }
-                _progresoMensual.value = if (objetivoMensual > 0) {
-                    ((total / objetivoMensual) * 100).toInt().coerceIn(0, 200)
-                } else {
-                    0
-                }
+            .addOnSuccessListener { doc ->
+                val ahorro = doc.getLong("ahorro_mensual")?.toDouble() ?: 0.0
+                _objetivo.value = ahorro
+                cargarGastos()  // luego cargo los gastos y calculo progreso
             }
             .addOnFailureListener {
-                Log.e("HomeViewModel", "Error al cargar gastos: ${it.message}")
+                _objetivo.value = 0.0
+                cargarGastos()
             }
     }
+
+    private fun cargarGastos() {
+        db.collection("users").document(uid)
+            .collection("gastos")
+            .orderBy("fecha", Query.Direction.DESCENDING)
+            .get()
+            .addOnSuccessListener { snap ->
+                val lista = snap.mapNotNull { it.toObject(Gasto::class.java) }
+                _gastos.value = lista.take(3)
+                calcularProgreso(lista.sumOf { it.cantidad })
+            }
+    }
+
+    private fun calcularProgreso(totalGasto: Double) {
+        val obj = _objetivo.value ?: 0.0
+        val pct = if (obj > 0) ((totalGasto / obj) * 100).toInt().coerceIn(0, 200) else 0
+        _progresoMensual.value = pct
+    }
 }
+

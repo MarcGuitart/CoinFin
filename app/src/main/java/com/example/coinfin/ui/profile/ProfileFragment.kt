@@ -50,6 +50,7 @@ class ProfileFragment : Fragment() {
             val intent = Intent(requireContext(), InitialActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
+            requireActivity().finish()
         }
     }
 
@@ -104,16 +105,38 @@ class ProfileFragment : Fragment() {
                 .document("config")
                 .set(data, SetOptions.merge())
         }
+
+        binding.categoriasNecesariasEditText.addTextChangedListener {
+            val texto = it.toString()
+            val lista = texto.split(",").map { cat -> cat.trim().lowercase() }.filter { cat -> cat.isNotEmpty() }
+
+            val uid = AuthManager.getCurrentUser()?.uid ?: return@addTextChangedListener
+            val data = mapOf("categorias_evitables" to lista)
+
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(uid)
+                .collection("reglas")
+                .document("config")
+                .set(data, SetOptions.merge())
+        }
     }
 
 
     private fun updateImpactPreview() {
         val impacto = ahorroObjetivo + 45
-        binding.impactPreview.text = "Si cumples esto, puedes ahorrar €$impacto/mes"
+        binding.metaEditText.addTextChangedListener { editable ->
+            val objetivo = editable.toString().toIntOrNull() ?: 0
+            binding.impacto.text = "Tu objetivo es ahorrar €$objetivo cada mes."
+        }
+        val tips = listOf(
+            "Lleva agua de casa en lugar de comprar botella",
+            "Prepara tu café en casa antes de salir",
+            "Revisa suscripciones y cancela las que no uses"
+        )
+        binding.tipTextView.text = tips.random()
 
-        // Suponiendo 500 como máximo de progreso
-        val progreso = (impacto * 100 / 500).coerceIn(0, 100)
-        binding.progressBar.progress = progreso
+
     }
 
     override fun onDestroyView() {

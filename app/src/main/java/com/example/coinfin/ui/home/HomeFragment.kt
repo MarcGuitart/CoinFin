@@ -76,24 +76,13 @@ class HomeFragment : Fragment() {
             binding.recyclerGastos.adapter = adapter
         }
 
-        viewModel.progresoMensual.observe(viewLifecycleOwner) { progreso ->
-            binding.progresoMensual.isIndeterminate = false
-            val diferencia = 100 - progreso
-            binding.progresoMensual.setProgressCompat(progreso, true)
-            val texto = if (diferencia > 0) {
-                binding.diferenciaText.setTextColor(Color.parseColor("#4CAF50"))
-                "Estás a ${diferencia}% de tu objetivo mensual"
-            } else {
-                binding.diferenciaText.setTextColor(Color.RED)
-                "Has sobrepasado tu objetivo mensual en ${-diferencia}%"
-            }
-            binding.diferenciaText.text = texto
-
-            checkAlertaDesviacion(progreso)
-        }
-
-        viewModel.categorias.observe(viewLifecycleOwner) {
-            // Aquí podrías mostrar resumen por categorías si lo deseas más adelante
+        viewModel.progresoMensual.observe(viewLifecycleOwner) { pct ->
+            binding.progresoMensual.setProgressCompat(pct, true)
+            // actualiza el texto de diferencia si lo haces con % o €:
+            binding.diferenciaText.text = if (pct < 100)
+                "Estás a ${100 - pct}% de tu objetivo"
+            else
+                "¡Objetivo alcanzado!"
         }
     }
 

@@ -55,8 +55,7 @@ class SignUpActivity : AppCompatActivity() {
                         if (saved) {
                             Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show()
                             supportActionBar?.setDisplayHomeAsUpEnabled(true)
-                            startActivity(Intent(this, com.example.coinfin.ui.home.MainActivity::class.java))
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                            startActivity(Intent(this, MainActivity::class.java))
                             finish()
                         } else {
                             Toast.makeText(this, "Error al guardar datos", Toast.LENGTH_SHORT).show()
