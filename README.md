@@ -56,7 +56,7 @@ Users define their **own savings goals**, set **custom rules** (e.g. no spending
 
 ## 🚀 Screenshots
 
-| Onboarding & Login | Dashboard | Profile | Analytics |
+| Onboarding & Login | Home | Profile | Analytics |
 |--------------------|-----------|---------|-----------|
 | ![SignUp](app/src/main/res/drawable/SignUp.jpeg) | ![Home](app/src/main/res/drawable/Home.jpeg) | ![Profile](app/src/main/res/drawable/Profile.jpeg) | ![Analytics](app/src/main/res/drawable/Analytics.jpeg) |
 
